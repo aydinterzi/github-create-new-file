@@ -4,13 +4,20 @@ import { ChangeEvent, useState } from "react";
 
 export default function Home() {
   const [files, setFiles] = useState(["app", "test", ""]);
+  const lastValue = files.at(-1);
 
-  const inputValue = files.at(-1);
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.includes("/")) {
       setFiles((files) => [...files, ""]);
     } else {
       setFiles((files) => [...files.slice(0, -1), e.target.value]);
+    }
+  };
+
+  const handleDelete = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.code === "Backspace" && event.target.value === "") {
+      event.preventDefault();
+      setFiles((files) => [...files.slice(0, -1)]);
     }
   };
 
@@ -24,7 +31,8 @@ export default function Home() {
           </div>
         ))}
         <input
-          value={inputValue}
+          value={lastValue}
+          onKeyDown={handleDelete}
           className="border text-white bg-transparent"
           type="text"
           onChange={handleChange}
